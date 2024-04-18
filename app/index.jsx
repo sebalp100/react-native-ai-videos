@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Link } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '../constants';
 import CustomButton from './components/CustomButton';
@@ -9,7 +9,7 @@ export default function App() {
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView contentContainerStyle={{ height: '100%' }}>
-        <View className=" min-h-[85vh] w-full justify-center items-center px-4">
+        <View className=" min-h-[95vh] w-full justify-center items-center px-4">
           <Image
             source={images.logo}
             className="w-[130px] h-[84px]"
@@ -35,9 +35,15 @@ export default function App() {
             Where creativity meets innovation. Embark on a journey of limitless
             exploration with AIVid
           </Text>
-          <CustomButton></CustomButton>
+          <CustomButton
+            title="Continue with Email"
+            handlePress={() => router.push('/sign-in')}
+            containerStyles="w-full mt-7"
+          ></CustomButton>
         </View>
       </ScrollView>
+
+      <StatusBar backgroundColor="#161622" style="light" />
     </SafeAreaView>
   );
 }
