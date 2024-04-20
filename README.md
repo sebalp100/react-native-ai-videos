@@ -1,1 +1,1 @@
-This is a react native app
+This is a react native app made with Expo.
