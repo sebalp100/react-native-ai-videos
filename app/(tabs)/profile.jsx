@@ -5,6 +5,8 @@ const Profile = () => {
   return (
     <View>
       <Text>Profile</Text>
+      <Text>Edit</Text>
+      <Text>Logout</Text>
     </View>
   );
 };
