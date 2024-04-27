@@ -55,7 +55,7 @@ const LikedVideos = () => {
               <Image
                 source={icons.deleted}
                 resizeMode="contain"
-                style={{ width: 30, height: 30, marginRight: 15 }}
+                style={{ width: 30, height: 30, marginRight: 20 }}
                 className="absolute right-0"
               />
             </TouchableOpacity>

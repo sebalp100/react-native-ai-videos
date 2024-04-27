@@ -38,6 +38,7 @@ const Home = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     await refetch();
+    await refetchLiked();
     setRefreshing(false);
   };
 
@@ -70,10 +71,10 @@ const Home = () => {
             <TouchableOpacity onPress={() => submit(item.$id)}>
               <Image
                 source={
-                  liked.includes(item.$id) ? icons.heartRed : icons.heartBlack
+                  liked.includes(item.$id) ? icons.heartRed : icons.heartWhite
                 }
                 resizeMode="contain"
-                style={{ width: 40, height: 40, marginRight: 15 }}
+                style={{ width: 40, height: 40, marginRight: 20 }}
                 className="absolute right-0"
               />
             </TouchableOpacity>

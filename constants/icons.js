@@ -13,7 +13,8 @@ import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
 import deleted from "../assets/icons/delete.png";
 import heartBlack from "../assets/icons/heart-black.png";
-import heartRed from "../assets/icons/heart-red.png"
+import heartRed from "../assets/icons/heart-red.png";
+import heartWhite from "../assets/icons/heart-white.png";
 
 export default {
   play,
@@ -32,4 +33,5 @@ export default {
   deleted,
   heartBlack,
   heartRed,
+  heartWhite
 };
