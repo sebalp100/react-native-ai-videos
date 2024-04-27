@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Alert,
@@ -23,22 +23,22 @@ import SearchInput from '../../components/SearchInput';
 import Trending from '../../components/Trending';
 import VideoCard from '../../components/VideoCard';
 import { useGlobalContext } from '../../context/GlobalProvider';
+import useGlobalStore from '../../context/globalStore';
 
 const Home = () => {
   const { user } = useGlobalContext();
+  const { likedVideos, setLikedVideos } = useGlobalStore();
   const { data: posts, refetch } = useAppwrite(getAllPosts);
   const { data: latestPosts } = useAppwrite(getLatestPosts);
-  const { data: likedVideos, refetch: refetchLiked } = useAppwrite(() =>
+  const { data: likedVideosData } = useAppwrite(() =>
     getLikedVideosForUser(user.$id)
   );
 
   const [refreshing, setRefreshing] = useState(false);
-  const liked = likedVideos.map((item) => item.$id);
 
   const onRefresh = async () => {
     setRefreshing(true);
     await refetch();
-    await refetchLiked();
     setRefreshing(false);
   };
 
@@ -48,18 +48,29 @@ const Home = () => {
         videoId: videoId,
         userId: user.$id,
       });
-      if (!liked.includes(videoId)) {
+
+      const updatedLikedVideos = likedVideos.includes(videoId)
+        ? likedVideos.filter((id) => id !== videoId)
+        : [...likedVideos, videoId];
+      setLikedVideos(updatedLikedVideos);
+
+      if (updatedLikedVideos.includes(videoId)) {
         Alert.alert('Success', 'Video added to bookmarks');
       } else {
         Alert.alert('Removed', 'Video removed from bookmarks');
       }
-
-      await refetchLiked();
     } catch (error) {
       Alert.alert('Error', error.message);
       console.log('error');
     }
   };
+
+  useEffect(() => {
+    if (likedVideosData) {
+      const extractedIds = likedVideosData.map((item) => item.$id);
+      setLikedVideos(extractedIds);
+    }
+  }, [likedVideosData]);
 
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -71,7 +82,9 @@ const Home = () => {
             <TouchableOpacity onPress={() => submit(item.$id)}>
               <Image
                 source={
-                  liked.includes(item.$id) ? icons.heartRed : icons.heartWhite
+                  likedVideos.includes(item.$id)
+                    ? icons.heartRed
+                    : icons.heartWhite
                 }
                 resizeMode="contain"
                 style={{ width: 40, height: 40, marginRight: 20 }}
@@ -102,7 +115,7 @@ const Home = () => {
               <View className="mt-1.5">
                 <Image
                   source={images.logoSmall}
-                  className="w-9 h-10"
+                  className="w-20 h-14"
                   resizeMode="contain"
                 />
               </View>

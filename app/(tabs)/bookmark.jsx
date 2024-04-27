@@ -14,12 +14,14 @@ import { addLikeToVideo, getLikedVideosForUser } from '../../lib/appwrite'; // U
 import { useGlobalContext } from '../../context/GlobalProvider';
 import EmptyState from '../../components/EmptyState';
 import VideoCard from '../../components/VideoCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { icons } from '../../constants';
+import useGlobalStore from '../../context/globalStore';
 
 const LikedVideos = () => {
   const { user } = useGlobalContext();
-  const { data: likedVideos, refetch } = useAppwrite(() =>
+  const { likedVideos, setLikedVideos } = useGlobalStore();
+  const { data: likedVideosData, refetch } = useAppwrite(() =>
     getLikedVideosForUser(user.$id)
   );
   const [refreshing, setRefreshing] = useState(false);
@@ -36,6 +38,10 @@ const LikedVideos = () => {
         videoId: videoId,
         userId: user.$id,
       });
+      if (likedVideosData.includes(videoId)) {
+        const updatedLikedVideos = likedVideos.filter((id) => id !== videoId);
+        setLikedVideos(updatedLikedVideos);
+      }
       Alert.alert('Success', 'Video removed from your bookmarks');
       await refetch();
     } catch (error) {
@@ -44,10 +50,17 @@ const LikedVideos = () => {
     }
   };
 
+  useEffect(() => {
+    if (likedVideosData) {
+      const extractedIds = likedVideosData.map((item) => item.$id);
+      setLikedVideos(extractedIds);
+    }
+  }, [likedVideosData]);
+
   return (
     <SafeAreaView className="bg-primary h-full">
       <FlatList
-        data={likedVideos}
+        data={likedVideosData}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
           <View>

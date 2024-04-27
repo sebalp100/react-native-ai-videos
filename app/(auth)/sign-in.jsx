@@ -51,11 +51,11 @@ const SignIn = () => {
           <Image
             source={images.logo}
             resizeMode="contain"
-            className="w-[115px] h-[34px]"
+            className="w-[225px] h-[64px] self-center"
           />
 
           <Text className="text-2xl font-semibold text-white mt-10 font-psemibold">
-            Log in to AIVid
+            Log in to FlickFusion
           </Text>
 
           <FormField
