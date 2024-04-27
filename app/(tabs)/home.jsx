@@ -1,10 +1,23 @@
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlatList, Image, RefreshControl, Text, View } from 'react-native';
+import {
+  Alert,
+  FlatList,
+  Image,
+  RefreshControl,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-import { images } from '../../constants';
+import { icons, images } from '../../constants';
 import useAppwrite from '../../lib/useAppwrite';
-import { getAllPosts, getLatestPosts } from '../../lib/appwrite';
+import {
+  addLikeToVideo,
+  getAllPosts,
+  getLatestPosts,
+  getLikedVideosForUser,
+} from '../../lib/appwrite';
 import EmptyState from '../../components/EmptyState';
 import SearchInput from '../../components/SearchInput';
 import Trending from '../../components/Trending';
@@ -15,13 +28,36 @@ const Home = () => {
   const { user } = useGlobalContext();
   const { data: posts, refetch } = useAppwrite(getAllPosts);
   const { data: latestPosts } = useAppwrite(getLatestPosts);
+  const { data: likedVideos, refetch: refetchLiked } = useAppwrite(() =>
+    getLikedVideosForUser(user.$id)
+  );
 
   const [refreshing, setRefreshing] = useState(false);
+  const liked = likedVideos.map((item) => item.$id);
 
   const onRefresh = async () => {
     setRefreshing(true);
     await refetch();
     setRefreshing(false);
+  };
+
+  const submit = async (videoId) => {
+    try {
+      await addLikeToVideo({
+        videoId: videoId,
+        userId: user.$id,
+      });
+      if (!liked.includes(videoId)) {
+        Alert.alert('Success', 'Video added to bookmarks');
+      } else {
+        Alert.alert('Removed', 'Video removed from bookmarks');
+      }
+
+      await refetchLiked();
+    } catch (error) {
+      Alert.alert('Error', error.message);
+      console.log('error');
+    }
   };
 
   return (
@@ -30,13 +66,25 @@ const Home = () => {
         data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <VideoCard
-            title={item.title}
-            thumbnail={item.thumbnail}
-            video={item.video}
-            creator={item.creator.username}
-            avatar={item.creator.avatar}
-          />
+          <View>
+            <TouchableOpacity onPress={() => submit(item.$id)}>
+              <Image
+                source={
+                  liked.includes(item.$id) ? icons.heartRed : icons.heartBlack
+                }
+                resizeMode="contain"
+                style={{ width: 40, height: 40, marginRight: 15 }}
+                className="absolute right-0"
+              />
+            </TouchableOpacity>
+            <VideoCard
+              title={item.title}
+              thumbnail={item.thumbnail}
+              video={item.video}
+              creator={item.creator.username}
+              avatar={item.creator.avatar}
+            />
+          </View>
         )}
         ListHeaderComponent={() => (
           <View className="flex my-6 px-4 space-y-6">

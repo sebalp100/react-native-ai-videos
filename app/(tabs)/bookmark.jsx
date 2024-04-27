@@ -6,6 +6,7 @@ import {
   RefreshControl,
   TouchableOpacity,
   Alert,
+  Text,
 } from 'react-native';
 
 import useAppwrite from '../../lib/useAppwrite';
@@ -13,7 +14,6 @@ import { addLikeToVideo, getLikedVideosForUser } from '../../lib/appwrite'; // U
 import { useGlobalContext } from '../../context/GlobalProvider';
 import EmptyState from '../../components/EmptyState';
 import VideoCard from '../../components/VideoCard';
-import InfoBox from '../../components/InfoBox';
 import { useState } from 'react';
 import { icons } from '../../constants';
 
@@ -36,7 +36,7 @@ const LikedVideos = () => {
         videoId: videoId,
         userId: user.$id,
       });
-      Alert.alert('Success', 'Video added to bookmarks');
+      Alert.alert('Success', 'Video removed from your bookmarks');
       await refetch();
     } catch (error) {
       Alert.alert('Error', error.message);
@@ -48,14 +48,15 @@ const LikedVideos = () => {
     <SafeAreaView className="bg-primary h-full">
       <FlatList
         data={likedVideos}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
           <View>
             <TouchableOpacity onPress={() => submit(item.$id)}>
               <Image
-                source={item.liked ? icons.menu : icons.bookmark} // Use heart icon or heartRed icon based on the liked status
+                source={icons.deleted}
                 resizeMode="contain"
-                style={{ width: 30, height: 30, marginRight: 10 }}
+                style={{ width: 30, height: 30, marginRight: 15 }}
+                className="absolute right-0"
               />
             </TouchableOpacity>
             <VideoCard
@@ -75,19 +76,11 @@ const LikedVideos = () => {
         )}
         ListHeaderComponent={() => (
           <View className="w-full flex justify-center items-center mt-6 mb-12 px-4">
-            <View className="w-16 h-16 border border-secondary rounded-lg flex justify-center items-center">
-              <Image
-                source={{ uri: user?.avatar }}
-                className="w-[90%] h-[90%] rounded-lg"
-                resizeMode="cover"
-              />
+            <View className="flex justify-center items-center">
+              <Text className=" font-psemibold text-xl text-gray-100">
+                Your saved videos
+              </Text>
             </View>
-
-            <InfoBox
-              title={user?.username}
-              containerStyles="mt-5"
-              titleStyles="text-lg"
-            />
           </View>
         )}
         refreshControl={
