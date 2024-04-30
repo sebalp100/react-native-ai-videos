@@ -35,7 +35,6 @@
 
 This app exhibits amazing design and functionality, facilitating the easy sharing of AI films across the community. It was built with React Native for smooth user experiences, Animatable for appealing animations, and coupled with the solid backend systems of Appwrite.
 
-
 ## 🛠 Built With <a name="built-with"></a>
 
 ### Tech Stack <a name="tech-stack"></a>
@@ -86,7 +85,6 @@ This app exhibits amazing design and functionality, facilitating the easy sharin
 
 - <b>Animations: </b> Dynamic animations using the Animatable library to enhance user interaction and engagement throughout the app's UI.
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- LIVE DEMO -->
@@ -124,6 +122,18 @@ git clone https://github.com/sebalp100/react-native-ai-videos
 To run the project, execute the following commands in your terminal:
 
 `npm install` to install all dependencies used.
+
+Create a new project in Appwrite and add 2 collections: video and users.
+
+Create an .env file on the root folder with the following keys and add your own values:
+
+`EXPO_PUBLIC_endpoint=`
+`EXPO_PUBLIC_platform=`
+`EXPO_PUBLIC_projectId=`
+`EXPO_PUBLIC_storageId=`
+`EXPO_PUBLIC_databaseId=`
+`EXPO_PUBLIC_userCollectionId=`
+`EXPO_PUBLIC_videoCollectionId=`
 
 `npx expo start -c` to run the server.
 
@@ -186,5 +196,3 @@ Give a ⭐️ if you like this project!
 This project is [MIT](./LICENSE) licensed.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
